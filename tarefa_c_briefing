@@ -1,0 +1,21 @@
+#Passos para a tarefa c
+
+x- cria um socket
+x- fica em estado de listen na porta "P" 
+
+y- dorme por 10s                        (tempo para aguarda a entrada dos demais clientes)
+y- descobre e armazena em uma lista o ip das maquinas rodando na porta "P"
+
+
+::principal::
+se for o dono do maior ip ou o único da lista torna-se "eleito":
+    - envia o seu respectivo ip aos demais junto com a mensagem dizendo que é o "eleito"
+    - os demais retiram o ip do "eleito" das suas respectivas listas de ip
+    - realiza a operacao desejada 
+    - diz aos demais que finalizou      (não participará das proximas eleicoes)    
+    #FIM do programa
+senão:
+    - aguarda mensagem dos demais para descobrir quem é o eleito
+    - ao receber o ip do eleito o retira da sua lista
+    - aguarda a mensagem de "fim" do eleito    
+    - volta para "::principal::"
