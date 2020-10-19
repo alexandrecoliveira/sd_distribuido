@@ -71,11 +71,13 @@ LISTA_IPS   = []
 time.sleep(10)                                          # (tempo para aguardar a entrada dos demais clientes)
 
 buscarNaRede(FAIXA_IP, LISTA_IPS, PORTA)                
-#LISTA_IPS_2 = [ip for ip in LISTA_IPS if ip != MEU_IP]
-#print ("IPS ATIVOS: ", LISTA_IPS_2)
-print (LISTA_IPS, "meu ip: ", MEU_IP)
+print ("Meu IP: ", MEU_IP)
+LISTA_IPS_2 = [ip for ip in LISTA_IPS if ip != MEU_IP]
+print ("Demais IPS: ", LISTA_IPS_2)
 
-if len(LISTA_IPS) == 1:   # somente essa maquina está na rede
+if len(LISTA_IPS) > 1:   
+  print ("mais máquinas na rede")
+else:                                                   # somente essa maquina está na rede
   realizaOperacao(DEST_SERVER)
 
 print ("Final")
