@@ -12,7 +12,7 @@ y- descobre e armazena em uma lista o ip das maquinas rodando na porta "P"
     - os demais retiram o ip do "eleito" das suas respectivas listas de ip
     - realiza a operacao desejada no servidor de armazenamento 
     - diz aos demais que finalizou      (não participará das proximas eleicoes)    
-    - FIM do programa
+    - retorna para ::principal::
 senão:
     - realiza a operacao desejada no servidor de armazenamento 
     - FIM do programa
