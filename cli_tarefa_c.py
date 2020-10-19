@@ -72,8 +72,8 @@ time.sleep(10)                                          # (tempo para aguardar a
 
 buscarNaRede(FAIXA_IP, LISTA_IPS, PORTA)                
 print ("Meu IP: ", MEU_IP)
-LISTA_IPS_2 = [ip for ip in LISTA_IPS if ip != MEU_IP]
-print ("Demais IPS: ", LISTA_IPS_2)
+LISTA_DEMAIS_IPS = [ip for ip in LISTA_IPS if ip != MEU_IP]
+print ("Demais IPS: ", LISTA_DEMAIS_IPS)
 
 if len(LISTA_IPS) > 1:   
   print ("mais máquinas na rede")
