@@ -1,18 +1,32 @@
 #Passos para a tarefa c
 
-x- cria um socket
-x- fica em estado de listen na porta "P" 
-
-y- dorme por 10s                        (tempo para aguardar a entrada dos demais clientes)
+y- cria um socket
+y- fica em estado de listen na porta "P" 
+y- dorme por 10s                                                (tempo para aguardar a entrada dos demais clientes)
 y- descobre e armazena em uma lista o ip das maquinas rodando na porta "P"
 
 ::principal::
-- analisa a lista de ips e se for o único da lista ou o dono do maior ip torna-se o "eleito":
-    - envia o seu respectivo ip aos demais junto com a mensagem dizendo que é o "eleito"
-    - os demais retiram o ip do "eleito" das suas respectivas listas de ip
-    - realiza a operacao desejada no servidor de armazenamento 
-    - diz aos demais que finalizou      (não participará das proximas eleicoes)    
+- inicia uma thread T para analisar se é o maior ip da rede
+
+se sim torna-se o "eleito" e :
+    - envia o seu respectivo ip aos demais ips da lista informando que é o eleito
+    - realiza a operacao desejada no servidor de armazenamento  (que roda na porta 5002) 
+    - envia "fim" aos demais para sinalizar que finalizou       (e não participará das proximas eleicoes)    
+    - finaliza a thread T
+    - encerra o socket e sai da eleicao
+    Encerra o programa FIM                                                         
+se não for:
+    - recebe e retira o ip do eleito da lista de ips
+    - fica aguardando a mensagem de "fim" do eleito
+    - finaliza a thread T 
     - retorna para ::principal::
-senão:
-    - realiza a operacao desejada no servidor de armazenamento 
-    - FIM do programa
+    
+- FIM do programa
+
+---
+criar uma funcao que analisa se é o maior ip
+criar uma funcao que recebe a lista de ips para informar que foi eleito
+criar uma funcao que recebe a lista de ips para informar "fim"
+criar uma funcao que recebe a lista de ips, o ip a ser removido e devolve a nova lista
+
+
