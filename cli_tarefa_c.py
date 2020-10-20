@@ -35,23 +35,26 @@ def removerIpDoEleito(lista_demais_ips, ip):
 def informarFimOperacao(lista_demais_ips, porta):
   print("Informando fim aos demais ...\n")
   for ip in lista_demais_ips:
+    print("ip dentro do fim operacao: ", ip)
     s = socket(AF_INET, SOCK_STREAM)
     s.settimeout(0.01)                                  
+    print("dentro do fim operacao: ", s)
     s.connect_ex((ip,porta))                            
     s.send("fim".encode())
-    time.sleep(1)
-
+    s.close()
 
 def informarMinhaEleicao(lista_demais_ips, meu_ip, porta):
   print("Informando eleicao aos demais...\n")
   for ip in lista_demais_ips:
+    print("ip dentro do fim operacao: ", ip)
     s = socket(AF_INET, SOCK_STREAM)
     s.settimeout(0.01)                                  
-    s.connect_ex((ip,porta))                  
+    s.connect_ex((ip,porta)) 
+    print("dentro infromar eleicao: ", s)                
     comando = "eleito;" + meu_ip
     s.send(comando.encode());
-    time.sleep(1)
-  
+    s.close()
+    
 def maiorIp(lista_ips, ip):
   return (lista_ips[-1] == ip)                              # se o ip atual for igual ao ultimo entao eh o maior
 
@@ -109,18 +112,20 @@ if maiorIp(LISTA_IPS, MEU_IP):
 else:
   while not maiorIp(LISTA_IPS, MEU_IP):
     print ("Nao eh a minha vez\n")
-    while True:   #funcionamento do servidor
-      con, cliente = s.accept()
-      while True:                                           # aguaarda receber mensagem no formato eleito;ip
+    while True:   #funcionamento do servidor      
+      print ("con, cliente = s.accept()")
+      while True:
+        con, cliente = s.accept()                                           # aguaarda receber mensagem no formato eleito;ip
         msgEleicao = con.recv(1024).decode()                
         if (msgEleicao.startswith("eleito")):
+          print(msgEleicao)
           break
       [eleito, ip_eleito] = msgEleicao.split(";")
       print ("O eleito foi: ", ip_eleito)
       removerIpDoEleito(LISTA_DEMAIS_IPS, ip_eleito)
       while True:                                           # Laço que serve para aguardar o comando "fim"
         msgDeFim = con.recv(1024).decode()
-        if (msgFim.startswith("fim")):
+        if (msgDeFim.startswith("fim")):
           print (ip, " finalizou ...\n")
           break
     #con.close()
