@@ -112,16 +112,15 @@ while not maiorIp(LISTA_IPS, MEU_IP):
       print ("O eleito foi: ", ip_eleito)
       removerIpDoEleito(LISTA_IPS, ip_eleito)
       break                                                 # fim - mensagem do eleito
-    #####################
-  while True: 
+  while True:                                               # Laço que serve para aguardar o comando "fim"
     print ("recebimento da mensagem de fim do eleito...")
-    con, cliente = s.accept()                               # Laço que serve para aguardar o comando "fim"
+    con, cliente = s.accept()                               
     msgDeFim = con.recv(1024).decode()
     if (msgDeFim.startswith("fim")):
       print (ip_eleito, " finalizou ...\n")
       break                                                 # fim - recebimento da mensagem de "fim" do eleito
   print ("verificando se sou o maior ip ...")
-#####        
+# A partir daqui o cliente eh o maior ip
 print ("Minha vez ... fora do while\n")
 removerIpDoEleito(LISTA_IPS, MEU_IP)  
 informarMinhaEleicao(LISTA_IPS, MEU_IP, PORTA)
