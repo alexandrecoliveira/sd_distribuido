@@ -27,18 +27,17 @@ def realizaOperacao(server_d):
       x = x + 1
       escrever(x, server_d)
       print ("Valor de x: ", x)
+  print ("fim da minha operacao")
 
 def removerIpDoEleito(lista_demais_ips, ip):
   lista_demais_ips.remove(ip)
   return 1
 
 def informarFimOperacao(lista_demais_ips, porta):
-  print("Informando fim aos demais ...\n")
+  print("Informando fim aos demais ...")
   for ip in lista_demais_ips:
-    print("ip dentro do fim operacao: ", ip)
     s = socket(AF_INET, SOCK_STREAM)
     s.settimeout(0.01)                                  
-    print("dentro do fim operacao: ", s)
     s.connect_ex((ip,porta))                            
     s.send("fim".encode())
     s.close()
@@ -46,11 +45,9 @@ def informarFimOperacao(lista_demais_ips, porta):
 def informarMinhaEleicao(lista_demais_ips, meu_ip, porta):
   print("Informando eleicao aos demais...\n")
   for ip in lista_demais_ips:
-    print("ip dentro do fim operacao: ", ip)
     s = socket(AF_INET, SOCK_STREAM)
     s.settimeout(0.01)                                  
-    s.connect_ex((ip,porta)) 
-    print("dentro infromar eleicao: ", s)                
+    s.connect_ex((ip,porta))              
     comando = "eleito;" + meu_ip
     s.send(comando.encode());
     s.close()
@@ -103,38 +100,33 @@ LISTA_DEMAIS_IPS = [ip for ip in LISTA_IPS if ip != MEU_IP]
 print ("Meu IP: ", MEU_IP)
 print ("Demais IPS: ", LISTA_DEMAIS_IPS)
 
-while True:
-  while not maiorIp(LISTA_IPS, MEU_IP):
-    print ("Nao eh a minha vez\n")
-    while True:   #funcionamento do servidor      
-      print ("con, cliente = s.accept()")
-      while True:
-        con, cliente = s.accept()                               # aguarda receber mensagem no formato eleito;ip
-        msgEleicao = con.recv(1024).decode()                
-        if (msgEleicao.startswith("eleito")):
-          print(msgEleicao)
-          break # fim - mensagem do eleito
-        #con.close()
+while not maiorIp(LISTA_IPS, MEU_IP):
+  print ("Nao eh a minha vez\n")
+  while True:
+    print ("aguardando mensagem do eleito...")
+    con, cliente = s.accept()                               # aguarda receber mensagem no formato eleito;ip
+    msgEleicao = con.recv(1024).decode()                
+    if (msgEleicao.startswith("eleito")):
+      print(msgEleicao)
       [eleito, ip_eleito] = msgEleicao.split(";")
       print ("O eleito foi: ", ip_eleito)
-      removerIpDoEleito(LISTA_DEMAIS_IPS, ip_eleito)
-      while True: 
-        con, cliente = s.accept()                                              # Laço que serve para aguardar o comando "fim"
-        msgDeFim = con.recv(1024).decode()
-        print ("msgDeFim recebida: ", msgDeFim)
-        if (msgDeFim.startswith("fim")):
-          print (ip_eleito, " finalizou ...\n")
-          break # fim - recebimento da mensagem de "fim" do eleito
-      break # fim - funcionamento do servidor
-#con.close()
-    break #fim - while que verifica se é o maiorIP()
-  break # fim - True
+      removerIpDoEleito(LISTA_IPS, ip_eleito)
+      break                                                 # fim - mensagem do eleito
+    #####################
+  while True: 
+    print ("recebimento da mensagem de fim do eleito...")
+    con, cliente = s.accept()                               # Laço que serve para aguardar o comando "fim"
+    msgDeFim = con.recv(1024).decode()
+    if (msgDeFim.startswith("fim")):
+      print (ip_eleito, " finalizou ...\n")
+      break                                                 # fim - recebimento da mensagem de "fim" do eleito
+  print ("verificando se sou o maior ip ...")
 #####        
-#if maiorIp(LISTA_IPS, MEU_IP):
-print ("Minha vez\n")
-informarMinhaEleicao(LISTA_DEMAIS_IPS, MEU_IP, PORTA)
+print ("Minha vez ... fora do while\n")
+removerIpDoEleito(LISTA_IPS, MEU_IP)  
+informarMinhaEleicao(LISTA_IPS, MEU_IP, PORTA)
 realizaOperacao(DEST_SERVER)
-informarFimOperacao(LISTA_DEMAIS_IPS, PORTA)
+informarFimOperacao(LISTA_IPS, PORTA)
 print ("Finalizei, saindo da eleicao...\n")
 
 print ("Final")
