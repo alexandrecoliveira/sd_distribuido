@@ -22,7 +22,7 @@ def escrever(x, dest):
   servidor.close()
 
 def realizaOperacao(server_d):
-  for i in range(1, random.randint(1,10) * 5):        
+  for i in range(1, random.randint(1,10) * 2):        
       x = ler(server_d)
       x = x + 1
       escrever(x, server_d)
@@ -103,31 +103,38 @@ LISTA_DEMAIS_IPS = [ip for ip in LISTA_IPS if ip != MEU_IP]
 print ("Meu IP: ", MEU_IP)
 print ("Demais IPS: ", LISTA_DEMAIS_IPS)
 
-if maiorIp(LISTA_IPS, MEU_IP):
-  print ("Minha vez\n")
-  informarMinhaEleicao(LISTA_DEMAIS_IPS, MEU_IP, PORTA)
-  realizaOperacao(DEST_SERVER)
-  informarFimOperacao(LISTA_DEMAIS_IPS, PORTA)
-  print ("Finalizei, saindo da eleicao...\n")
-else:
+while True:
   while not maiorIp(LISTA_IPS, MEU_IP):
     print ("Nao eh a minha vez\n")
     while True:   #funcionamento do servidor      
       print ("con, cliente = s.accept()")
       while True:
-        con, cliente = s.accept()                                           # aguaarda receber mensagem no formato eleito;ip
+        con, cliente = s.accept()                               # aguarda receber mensagem no formato eleito;ip
         msgEleicao = con.recv(1024).decode()                
         if (msgEleicao.startswith("eleito")):
           print(msgEleicao)
-          break
+          break # fim - mensagem do eleito
+        #con.close()
       [eleito, ip_eleito] = msgEleicao.split(";")
       print ("O eleito foi: ", ip_eleito)
       removerIpDoEleito(LISTA_DEMAIS_IPS, ip_eleito)
-      while True:                                           # Laço que serve para aguardar o comando "fim"
+      while True: 
+        con, cliente = s.accept()                                              # Laço que serve para aguardar o comando "fim"
         msgDeFim = con.recv(1024).decode()
+        print ("msgDeFim recebida: ", msgDeFim)
         if (msgDeFim.startswith("fim")):
-          print (ip, " finalizou ...\n")
-          break
-    #con.close()
+          print (ip_eleito, " finalizou ...\n")
+          break # fim - recebimento da mensagem de "fim" do eleito
+      break # fim - funcionamento do servidor
+#con.close()
+    break #fim - while que verifica se é o maiorIP()
+  break # fim - True
+#####        
+#if maiorIp(LISTA_IPS, MEU_IP):
+print ("Minha vez\n")
+informarMinhaEleicao(LISTA_DEMAIS_IPS, MEU_IP, PORTA)
+realizaOperacao(DEST_SERVER)
+informarFimOperacao(LISTA_DEMAIS_IPS, PORTA)
+print ("Finalizei, saindo da eleicao...\n")
 
 print ("Final")
